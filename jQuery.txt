@@ -1,0 +1,226 @@
+jQuery
+
+jQueryの読み込み
+<head>タグの中でURLを読み込む
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+jQueryファイルの読み込み
+bodyタグの終了直前で読み込む
+</body>の直前に書くことで、WEBページの表示速度をより早めることが出来る。
+<script src="script.js"></script>
+
+jQueryはHTMLの中身を操作するため、
+HTMLの読み込みが完了してからjQueryによる操作を開始するようにする。
+そのためにはreadyイベントを使用し、
+$(document).ready(function(){ });の中身にjQueryの処理を書いていく。
+省略して、$(function(){ });と書くことができる
+
+
+$('セレクタ').メソッド(引数);
+セレクタにはHTMLのタグ名やclass名などを指定
+
+$(function() {
+  $('h1').hide();
+  $('img').fadeOut(1500);
+  $('p').slideUp(1500);
+
+  $('#title').slideUp();
+  $('#title').slideDown();
+
+  $('.lesson-item').fadeOut();
+  $('#image').fadeIn();
+
+  $('#title').show();
+});
+
+idは同一ページに一箇所しか存在しないので、jQueryの処理が高速化される。
+jQueryオブジェクトのセレクタにはできるだけidを用いる。
+
+
+イベント構文
+$('セレクタ').イベント名(function(){ });
+
+$('#hide-text').click(function(){
+  $('#text').slideUp();
+  $('#text').css('color', 'red');
+});
+
+$('#change-text').click(function(){
+  $('#text').text('ようこそ、Progateへ');
+});
+$('#change-html').click(function(){
+  $('#text').html('<a href="https://prog-8.com/">ようこそ、Progateへ</a>');
+});
+
+$(this)はイベントの中で、そのイベントが起こった要素を取得することができる。
+$()の中でthisをクオートで囲まない
+$('.list-item').click(function(){
+  $(this).css('color', 'red');
+});
+
+
+変数
+同じjQueryオブジェクトを複数回使用する時は変数を使う。
+コードが見やすくなる上、jQueryの処理が高速化される。
+jQueryオブジェクトを格納する時は、わかりやすいように変数の頭に$を付ける。
+
+var $div = $('div');
+$div.css('color', 'red');
+$div.html('jQuery');
+$div.fadeOut();
+
+
+メソッドチェーン
+同じjQueryオブジェクトを複数回使用する時は、
+メソッドチェーンを使うことでも処理速度を高速化できる。
+$('div').css('color', 'red').html('jQuery');
+
+
+findメソッドは、すべての子孫要素(自分よりも下の階層の要素すべて）の中から
+指定したセレクタを持つ要素を取得したいときに用いる。
+$('#wrapper').find('a').css('color', 'red');
+
+childrenメソッドは、指定したセレクタが持つ子要素（一階層だけ下）の中から
+指定したセレクタに合致した要素を取得したいときに用いる。
+$('#wrapper').children('a').fadeOut();
+
+
+hoverイベント
+$('セレクタ').hover(マウスをのせた時の処理, マウスをはずした時の処理);
+$('#language-wrapper').hover(
+  function() {
+    $('.language-text').fadeIn();
+  },
+  function() {
+    $('.language-text').fadeOut();
+  }
+);
+
+
+モーダル表示
+１）モーダルをcssで非表示に
+２）ボタンにclickイベントを設定
+３）clickイベントでモーダルを表示
+
+hasClassメソッドは、引数に指定したクラスを、
+オブジェクトが持っているか判定するときに使用
+
+addClassメソッドを用いると、指定した要素にクラスを追加することができる
+removeClassメソッドを用いると、指定した要素から指定したクラスを取り除くことができる
+
+$('.faq-list-item').click(function() {
+  var $answer = $(this).find('.answer');
+  if($answer.hasClass('open')) {
+    $answer.removeClass('open');
+    $answer.slideUp();
+    $(this).find('span').text('+');
+  } else {
+    $answer.addClass('open');
+    $answer.slideDown();
+    $(this).find('span').text('-');
+  }
+});
+
+
+スライド機能
+「.slide」要素は「display: none;」を用いて基本的に表示されないようにし、
+activeクラスがついた「.slide」要素だけが表示されるようにします。
+
+indexメソッド
+クラスがついた要素のインデックス番号を取得できる
+$(function() {
+  $('.index-btn').click(function() {
+    $('.active').removeClass('active');
+    var clickedIndex = $('.index-btn').index($(this));
+    $('.slide').eq(clickedIndex).addClass('active');
+  });
+});
+
+prevメソッド
+jQueryオブジェクトの兄弟要素（同じ階層の要素）の中から一つ前の要素を取得できる。
+
+nextメソッド
+jQueryオブジェクトの兄弟要素（同じ階層の要素）の中から一つ後の要素を取得できる。
+
+
+jQueryで値をセットするメソッドは大抵ゲットにも使うことができます。
+text()、html()、css('font-size')
+
+HTMLの属性はattrメソッドを用いて「ゲット」と「セット」ができます。
+  attr('id', 'title')
+  attr('属性名', '属性値')
+第二引数を指定しない場合は、その属性の値を取得できます。
+  id = $('.section-content p').attr('id')
+  href = $('#link').attr('href')
+
+inputタグに入力されている値は、valメソッドで取得できます。
+
+submitイベントを用いると、送信ボタンがクリックされたときだけでなく、
+「Enter」キーでフォームが送信された場合もイベントが発生します。
+
+selectタグはvalメソッドによって、
+選択中の値（optionタグのvalue属性の値）を取得できます。
+$('#form').submit(function() {
+  var selectItem = $('#select-form').val();
+  var textItem = $('#text-form').val();
+  if (textItem == '') {
+    $('#error-message').text('理由を記入してください');
+  } else {
+    $('#error-message').text('');
+  }
+  $('#output-select').text(selectItem);
+  $('#output-text').text(textItem);
+  return false;
+});
+
+空文字列は通常「''」（シングルクォート２つ）で表記します。
+
+入力欄への自動入力
+valメソッドは値を取得することもできますが、
+反対に引数に値を指定することで、フォームに値をセットすることもできます。
+
+セレクトボックスの自動入力
+selectタグもvalメソッドを用いて自動で選択させることができます。
+
+カスタムデータ属性
+「data-」から始まる属性名を自由に設定できます。
+data属性は、何らかの情報をHTML内に指定しておくのに便利
+
+$('.option-btn').click(function() {
+  var optionText = $(this).text();
+  var clickedOption = $(this).attr('data-option');
+  $('#text-form').val(optionText + 'が好きな理由は、');
+  $('#select-form').val(clickedOption);
+});
+
+
+animateメソッド
+$('セレクタ').animate({'プロパティ':'値'})のように、引数は連想配列で指定します。
+2つ目の引数でアニメーションの時間を設定することができます。
+$(this).animate({
+  'font-size':'30px'
+}, 300);
+
+animateメソッドでは、CSSの値だけでなく、scrollTopなどの値も変更できます。
+$('html, body').animate({'scrollTop': 0}, 時間);
+$('html, body').animate({
+  'scrollTop': 0
+}, 500);
+
+
+ページ内リンク
+<a>タグは他のページへのリンクだけでなく、ページ内のリンクを作ることもできます。
+リンクの飛び先にidを指定し、<a>タグのhref属性に"#id名"とすると、
+<a>タグをクリックするとそのidの要素が表示されている場所まで移動するようになります。
+
+jQueryで実装するとリンク先への移動にアニメーションをつけたりすることが可能になります。
+scrollTopメソッドは、$('html, body').scrollTop(値); のように指定し、
+ページ最上部から値pxの位置に移動することができます。
+scrollTopは通常$('html, body')に対して用いる。
+
+
+offsetメソッド
+要素の表示位置を取得することができます。
+offsetメソッドはページの上端からの距離と
+ページの左端からの距離が連想配列の形で返ってきます。
+offset().topとすると、ページの上端からの距離が取得できる。
